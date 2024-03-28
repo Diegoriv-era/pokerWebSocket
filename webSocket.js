@@ -34,8 +34,10 @@ io.on("connection", (socket) => {
     console.log("USER CONNECTED: ", socket.id);
 
     socket.on("changeColor", (data) =>{
-        socket.broadcast.emit("receive_message", data.color);
-        console.log(data.color,"@@@");
+        //socket.broadcast.emit("receive_message", data.color);
+        socket.to(data.roomName).emit("receive_message",data.color);
+        console.log(data.color % 2,"@@@");
+        console.log("room emiiting message to:", data.roomName);
 
     });
 
