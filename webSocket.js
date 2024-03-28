@@ -9,13 +9,25 @@ app.use(cors());
 const server = http.createServer(app);
 
 const io = new Server(server, {
+    autoConnect: false,
+    reconnect: false,
     cors: {
         origin :"http://localhost:3000",
         methods: ["GET", "POST"],
+        autoConnect: false,
+        reconnect: false
     },
 
 
 
+//foucus on 
+/**
+ * 
+ * commuinity card - web socket
+ * our own cards - no web socket, except at the end.
+ * 
+ * 
+ */
 });
 
 io.on("connection", (socket) => {
@@ -26,6 +38,12 @@ io.on("connection", (socket) => {
         console.log(data.color,"@@@");
 
     });
+
+        // Listen for "disconnect" event
+        socket.on("disconnect", () => {
+            console.log("USER DISCONNECTED: ", socket.id);
+            // Perform any cleanup or additional handling here
+        });
 })
 
 // io.on('changeColor', (data) =>{
