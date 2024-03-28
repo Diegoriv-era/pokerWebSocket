@@ -39,11 +39,16 @@ io.on("connection", (socket) => {
 
     });
 
-        // Listen for "disconnect" event
-        socket.on("disconnect", () => {
-            console.log("USER DISCONNECTED: ", socket.id);
-            // Perform any cleanup or additional handling here
-        });
+    // Listen for "disconnect" event
+    socket.on("disconnect", () => {
+        console.log("USER DISCONNECTED: ", socket.id);
+        // Perform any cleanup or additional handling here
+    });
+
+    socket.on("joinRoom", (roomName) => {
+        console.log(`Joined table ${roomName}`);
+        socket.join(roomName)
+    });
 })
 
 // io.on('changeColor', (data) =>{
