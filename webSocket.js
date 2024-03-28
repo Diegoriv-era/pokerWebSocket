@@ -10,12 +10,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     autoConnect: false,
-    reconnect: false,
+    reconnect: true,
+    
     cors: {
         origin :"http://localhost:3000",
+        //origin :"https://online-poker-game.onrender.com",
         methods: ["GET", "POST"],
         autoConnect: false,
-        reconnect: false
+        reconnect: true
     },
 
 
@@ -47,9 +49,10 @@ io.on("connection", (socket) => {
         // Perform any cleanup or additional handling here
     });
 
-    socket.on("joinRoom", (roomName) => {
+    socket.on("createRoom", (roomName) => {
         console.log(`Joined table ${roomName}`);
-        socket.join(roomName)
+        socket.join(roomName);
+        socket.broadcast.emit("room_created", roomName);
     });
 })
 
