@@ -7,6 +7,7 @@ const cors = require("cors");
 app.use(cors());
 
 const server = http.createServer(app);
+let connectedUsers = [];
 let arrayOfRooms = [];
 let usersRooms = [];
 const io = new Server(server, {
@@ -36,6 +37,15 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log("USER CONNECTED: ", socket.id);
     socket.emit("room_created", arrayOfRooms);
+
+    socket.on("userConnected", (data) =>{
+        console.log("under userConnected: ",data.userName)
+        connectedUsers.push({
+            user: data.userName,
+            id: socket.id
+        });
+        console.log(connectedUsers);
+    })
     socket.on("changeColor", (data) =>{
         //socket.broadcast.emit("receive_message", data.color);
         socket.to(data.roomName).emit("receive_message",data.color);
@@ -45,15 +55,33 @@ io.on("connection", (socket) => {
     });
 
     // Listen for "disconnect" event
-    
+    //made by top G homero
     socket.on("disconnect", () => {
         console.log("USER DISCONNECTED: ", socket.id);
-        console.log("before ",usersRooms);
+        console.log("Rooms Before ",usersRooms);
         usersRooms.forEach((obj,idx) =>{
+            let deleteRoom = true;
+            let hostIdx;
             if(obj.id === socket.id){
-                usersRooms.splice(idx, 1);
-                arrayOfRooms.splice(idx,1);
-                socket.broadcast.emit("removeRoom",obj.room);
+                let roomToBeDeleted = obj.room
+                usersRooms.splice(idx,1);
+                 usersRooms.forEach((obj, idx) =>{
+                     if(obj.room === roomToBeDeleted){
+                        deleteRoom = false;
+                     }
+                 });
+                 if(deleteRoom){
+                    arrayOfRooms.forEach((obj, idx)=>{
+                        if(deleteRoom){
+                        if(obj === roomToBeDeleted){
+                            arrayOfRooms.splice(idx,1);
+                            deleteRoom = !deleteRoom;
+                        }
+                    }
+                    });
+                    console.log("Rooms After: ", arrayOfRooms);                  
+                    socket.broadcast.emit("removeRoom",arrayOfRooms);
+                 }
                 //return;
             }
         });
@@ -76,6 +104,11 @@ io.on("connection", (socket) => {
     socket.on("playerJoined", (data) =>{
         socket.join(data.room)
         console.log(`${data.userName} is joining room: ${data.room}`)
+        usersRooms.push({
+            id:socket.id,
+            room: data.room
+        })
+        console.log("the ammount of people in the current room seesion:", usersRooms)
     })
 
 })
