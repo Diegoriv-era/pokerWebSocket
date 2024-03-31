@@ -85,6 +85,12 @@ io.on("connection", (socket) => {
                 //return;
             }
         });
+
+
+        connectedUsers = connectedUsers.filter(user => {
+            return user.id !== socket.id;
+        });
+        
         console.log("After ",usersRooms);
         
         // Perform any cleanup or additional handling here
