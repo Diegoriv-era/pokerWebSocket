@@ -54,6 +54,11 @@ io.on("connection", (socket) => {
 
     });
 
+    socket.on("selectSeat", (data) => {
+        socket.to(data.roomName).emit("receiveSeatNumber", {...data, usersRooms: usersRooms});
+        console.log(`${data.user.userName} sat at seat ${data.seatNumber} on table ${data.roomName}`);
+    });
+
     // Listen for "disconnect" event
     //made by top G homero
     socket.on("disconnect", () => {
@@ -96,26 +101,28 @@ io.on("connection", (socket) => {
         // Perform any cleanup or additional handling here
     });
 
-    socket.on("createRoom", (roomName) => {
-        console.log(`Joined table ${roomName}`);
-        arrayOfRooms.push(roomName);
+    socket.on("createRoom", (data) => {
+        console.log(`Joined table ${data.roomName}`);
+        arrayOfRooms.push(data.roomName);
         usersRooms.push({
+            userName: data.userName,
             id: socket.id,
-            room: roomName
+            room: data.roomName
         });
         socket.broadcast.emit("room_created", arrayOfRooms);
-        socket.join(roomName);
-        
+        socket.join(data.roomName);
+        console.log(`#####${arrayOfRooms}`)
     });
     socket.on("playerJoined", (data) =>{
         socket.join(data.room)
         console.log(`${data.userName} is joining room: ${data.room}`)
         usersRooms.push({
+            userName: data.userName,
             id:socket.id,
             room: data.room
         })
-        console.log("the ammount of people in the current room seesion:", usersRooms)
-    })
+        console.log("the ammount of people in the current room seesion:", usersRooms, arrayOfRooms)
+    });
 
 })
 
