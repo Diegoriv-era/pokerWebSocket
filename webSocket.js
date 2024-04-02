@@ -10,6 +10,8 @@ const server = http.createServer(app);
 let connectedUsers = [];
 let arrayOfRooms = [];
 let usersRooms = [];
+let seatLayout = [];
+
 const io = new Server(server, {
     autoConnect: false,
     reconnect: true,
@@ -57,6 +59,12 @@ io.on("connection", (socket) => {
     socket.on("selectSeat", (data) => {
         socket.to(data.roomName).emit("receiveSeatNumber", {...data, usersRooms: usersRooms});
         console.log(`${data.user.userName} sat at seat ${data.seatNumber} on table ${data.roomName}`);
+        seatLayout.push({
+            seatNumber:data.seatNumber, 
+            userName:data.user.userName, 
+            socketID:socket.id, 
+            room: data.roomName
+        });
     });
 
     // Listen for "disconnect" event
@@ -121,6 +129,11 @@ io.on("connection", (socket) => {
             id:socket.id,
             room: data.room
         })
+        // Find the seatLayout for the current room
+    const roomSeatLayout = seatLayout.filter(seat => seat.room === data.room);
+    
+    // Emit the room's seatLayout to the player who just joined
+    socket.emit("update_room", roomSeatLayout);
         console.log("the ammount of people in the current room seesion:", usersRooms, arrayOfRooms)
     });
 
