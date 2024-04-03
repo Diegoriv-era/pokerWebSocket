@@ -17,8 +17,8 @@ const io = new Server(server, {
     reconnect: true,
     
     cors: {
-        //origin :"http://localhost:3000",
-        origin :"https://online-poker-game.onrender.com",
+        origin :"http://localhost:3000",
+        //origin :"https://online-poker-game.onrender.com",
         methods: ["GET", "POST"],
         autoConnect: false,
         reconnect: true
@@ -81,6 +81,13 @@ io.on("connection", (socket) => {
                  usersRooms.forEach((obj, idx) =>{
                      if(obj.room === roomToBeDeleted){
                         deleteRoom = false;
+                                // Find the seatLayout for the current room
+                    let roomSeatLayout = seatLayout.filter(seat => seat.room === obj.room);
+                    roomSeatLayout = roomSeatLayout.filter(user => user.socketID === socket.id);
+                    // Emit the room's seatLayout to the player who just joined
+                    socket.to(obj.room).emit("groupUpdate_room", roomSeatLayout);
+                    console.log("the ammount of people in the current room seesion:", usersRooms, arrayOfRooms)
+                    
                      }
                  });
                  if(deleteRoom){
@@ -130,7 +137,7 @@ io.on("connection", (socket) => {
             room: data.room
         })
         // Find the seatLayout for the current room
-    const roomSeatLayout = seatLayout.filter(seat => seat.room === data.room);
+    let roomSeatLayout = seatLayout.filter(seat => seat.room === data.room);
     
     // Emit the room's seatLayout to the player who just joined
     socket.emit("update_room", roomSeatLayout);
