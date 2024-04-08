@@ -211,6 +211,12 @@ io.on("connection", (socket) => {
         console.log("the ammount of people in the current room seesion:", usersRooms, arrayOfRooms)
     });
 
+    socket.on("dealCards", (data) => {
+        // sending data back to ui
+        console.log(data);
+        socket.to(data.roomName).emit("recievedDealCards", data);
+    });
+
 })
 
 // io.on('changeColor', (data) =>{
