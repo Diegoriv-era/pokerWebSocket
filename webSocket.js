@@ -222,11 +222,19 @@ io.on("connection", (socket) => {
         console.log("the ammount of people in the current room seesion:", usersRooms, arrayOfRooms)
     });
 
-    socket.on("dealCards", (data) => {
+    socket.on("dealHoleCards", (data) => {
         // sending data back to ui
         console.log(data);
-        socket.to(data.roomName).emit("recievedDealCards", data);
+        socket.to(data.roomName).emit("recievedDealHoleCards", data);
     });
+
+    socket.on("dealFlop", (data) => {
+        socket.to(data.roomName).emit("recievedDealFlop", data);
+    })
+
+    socket.on("dealTurn", (data) => {
+        socket.to(data.roomName).emit("recievedDealTurn", data);
+    })
     
     socket.on("getConnectedUsers", (data)=>{
         socket.emit("sendConnectedUsers",connectedUsers);
