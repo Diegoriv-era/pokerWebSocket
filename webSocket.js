@@ -46,6 +46,8 @@ io.on("connection", (socket) => {
             user: data.userName,
             id: socket.id
         });
+        socket.broadcast.emit("sendConnectedUsers",connectedUsers);
+        socket.emit("sendConnectedUsers",connectedUsers);
         console.log(connectedUsers);
     })
     socket.on("changeColor", (data) =>{
@@ -110,6 +112,7 @@ io.on("connection", (socket) => {
                     });
                     console.log("Rooms After: ", arrayOfRooms);                  
                     socket.broadcast.emit("removeRoom",arrayOfRooms);
+                    
                  }
                 //return;
             }
@@ -119,6 +122,7 @@ io.on("connection", (socket) => {
         connectedUsers = connectedUsers.filter(user => {
             return user.id !== socket.id;
         });
+        socket.broadcast.emit("sendConnectedUsers",connectedUsers);
         
         console.log("After ",usersRooms);
         
@@ -216,6 +220,12 @@ io.on("connection", (socket) => {
         console.log(data);
         socket.to(data.roomName).emit("recievedDealCards", data);
     });
+    
+    socket.on("getConnectedUsers", (data) =>{
+        console.log("called getConnected");
+        socket.emit("sendConnectedUsers",connectedUsers);
+
+    })
 
 })
 
