@@ -48,6 +48,8 @@ io.on("connection", (socket) => {
         });
         socket.broadcast.emit("sendConnectedUsers",connectedUsers);
         socket.emit("sendConnectedUsers",connectedUsers);
+        socket.emit("sendFriendsRooms", usersRooms);
+
         console.log(connectedUsers);
     })
     socket.on("changeColor", (data) =>{
@@ -123,6 +125,8 @@ io.on("connection", (socket) => {
             return user.id !== socket.id;
         });
         socket.broadcast.emit("sendConnectedUsers",connectedUsers);
+        socket.broadcast.emit("sendFriendsRooms", usersRooms);
+
         
         console.log("After ",usersRooms);
         
@@ -173,16 +177,16 @@ io.on("connection", (socket) => {
                     console.log("Rooms After: ", arrayOfRooms);                  
                     socket.broadcast.emit("removeRoom",arrayOfRooms);
                     socket.emit("removeRoom",arrayOfRooms);
+                    
+
                  }
                 //return;
             }
         });
 
 
-        connectedUsers = connectedUsers.filter(user => {
-            return user.id !== socket.id;
-        });
-        
+ 
+        socket.broadcast.emit("sendFriendsRooms", usersRooms);
         console.log("After ",usersRooms);
         
         // Perform any cleanup or additional handling here
@@ -198,6 +202,7 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("room_created", arrayOfRooms);
         socket.join(data.roomName);
         console.log(`#####${arrayOfRooms}`)
+        socket.broadcast.emit("sendFriendsRooms", usersRooms);
     });
     socket.on("playerJoined", (data) =>{
         socket.join(data.room)
@@ -207,6 +212,8 @@ io.on("connection", (socket) => {
             id:socket.id,
             room: data.room
         })
+        socket.broadcast.emit("sendFriendsRooms", usersRooms);
+
         // Find the seatLayout for the current room
     let roomSeatLayout = seatLayout.filter(seat => seat.room === data.room);
     
@@ -221,11 +228,14 @@ io.on("connection", (socket) => {
         socket.to(data.roomName).emit("recievedDealCards", data);
     });
     
-    socket.on("getConnectedUsers", (data) =>{
-        console.log("called getConnected");
+    socket.on("getConnectedUsers", (data)=>{
         socket.emit("sendConnectedUsers",connectedUsers);
-
+        socket.emit("sendFriendsRooms", usersRooms);
+        socket.broadcast.emit("sendConnectedUsers",connectedUsers);
+        socket.broadcast.emit("sendFriendsRooms", usersRooms);
     })
+
+    
 
 })
 
