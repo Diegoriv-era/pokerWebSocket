@@ -17,8 +17,8 @@ const io = new Server(server, {
     reconnect: true,
     
     cors: {
-        origin :"http://localhost:3000",
-        //origin :"https://online-poker-game.onrender.com",
+        //origin :"http://localhost:3000",
+        origin :"https://online-poker-game.onrender.com",
         methods: ["GET", "POST"],
         autoConnect: false,
         reconnect: true
@@ -221,24 +221,6 @@ io.on("connection", (socket) => {
     socket.emit("update_room", roomSeatLayout);
         console.log("the ammount of people in the current room seesion:", usersRooms, arrayOfRooms)
     });
-
-    socket.on("dealHoleCards", (data) => {
-        // sending data back to ui
-        console.log(data);
-        socket.to(data.roomName).emit("recievedDealHoleCards", data);
-    });
-
-    socket.on("dealFlop", (data) => {
-        socket.to(data.roomName).emit("recievedDealFlop", data);
-    })
-
-    socket.on("dealTurn", (data) => {
-        socket.to(data.roomName).emit("recievedDealTurn", data);
-    })
-
-    socket.on("dealRiver", (data) => {
-        socket.to(data.roomName).emit("recievedDealRiver", data);
-    })
     
     socket.on("getConnectedUsers", (data)=>{
         socket.emit("sendConnectedUsers",connectedUsers);
@@ -247,7 +229,33 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("sendFriendsRooms", usersRooms);
     })
 
-    
+    socket.on("dealHoleCards", (data) => {
+        socket.to(data.roomName).emit("recievedDealHoleCards", data);
+    });
+
+    socket.on("dealFlop", (data) => {
+        socket.to(data.roomName).emit("recievedDealFlop", data);
+    });
+
+    socket.on("dealTurn", (data) => {
+        socket.to(data.roomName).emit("recievedDealTurn", data);
+    });
+
+    socket.on("dealRiver", (data) => {
+        socket.to(data.roomName).emit("recievedDealRiver", data);
+    });
+
+    socket.on("initBlinds", (data) => {
+        socket.to(data.roomName).emit("recievedInitBlinds", data);
+    });
+
+    socket.on("rotateBlinds", (data) => {
+        socket.to(data.roomName).emit("recievedRotateBlinds", data);
+    });
+
+    socket.on("startGame", (data) => {
+        socket.to(data.roomName).emit("recievedStartGame", data);
+    });
 
 })
 
