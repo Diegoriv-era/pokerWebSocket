@@ -17,8 +17,8 @@ const io = new Server(server, {
     reconnect: true,
     
     cors: {
-        //origin :"http://localhost:3000",
-        origin :"https://online-poker-game.onrender.com",
+        origin :"http://localhost:3000",
+        //origin :"https://online-poker-game.onrender.com",
         methods: ["GET", "POST"],
         autoConnect: false,
         reconnect: true
@@ -255,6 +255,10 @@ io.on("connection", (socket) => {
 
     socket.on("startGame", (data) => {
         socket.to(data.roomName).emit("recievedStartGame", data);
+    });
+
+    socket.on("playersBestHands", (data) => {
+        socket.to(data.roomName).emit("recievedPlayersBestHands", data);
     });
 
 })
