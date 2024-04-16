@@ -260,6 +260,9 @@ io.on("connection", (socket) => {
     socket.on("playersBestHands", (data) => {
         socket.to(data.roomName).emit("recievedPlayersBestHands", data);
     });
+    socket.on("playerCheckAction", (data)=>{
+        socket.to(data.roomName).emit("recievedCheckAction", data);
+    })
 
 })
 
