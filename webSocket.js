@@ -67,8 +67,10 @@ io.on("connection", (socket) => {
             seatNumber:data.seatNumber, 
             userName:data.user.userName, 
             socketID:socket.id, 
-            room: data.roomName
+            room: data.roomName,
+            chipCount: data.chipCount
         });
+        console.log("AAAA ", seatLayout);
     });
 
     // Listen for "disconnect" event
@@ -219,6 +221,7 @@ io.on("connection", (socket) => {
     
     // Emit the room's seatLayout to the player who just joined
     socket.emit("update_room", roomSeatLayout);
+    //console.log("!!! ^^^ ", seatLayout);
         console.log("the ammount of people in the current room seesion:", usersRooms, arrayOfRooms)
     });
     
@@ -227,7 +230,24 @@ io.on("connection", (socket) => {
         socket.emit("sendFriendsRooms", usersRooms);
         socket.broadcast.emit("sendConnectedUsers",connectedUsers);
         socket.broadcast.emit("sendFriendsRooms", usersRooms);
-    })
+    });
+
+    socket.on("updateChipCount", data => {
+        console.log(`in websocket updateChipCount new chipCount: ${data.chipCount}`);
+        let roomSeatLayout = seatLayout.filter(seat => seat.room === data.room);
+        roomSeatLayout.forEach(seat => {
+            if (seat.seatNumber === data.seatNumber) {
+                seat.chipCount = data.chipCount;
+            } 
+        });
+        //socket.emit("update_room", roomSeatLayout);
+        socket.to(data.room).emit("recievedUpdateChipCount", roomSeatLayout);
+    });
+
+    socket.on("updateTotalPot", data => {
+        console.log(`in socket updateTotalPot, recieved: ${data.totalPot}`)
+        socket.to(data.roomName).emit("recievedUpdateTotalPot", data);
+    });
 
     socket.on("dealHoleCards", (data) => {
         socket.to(data.roomName).emit("recievedDealHoleCards", data);
