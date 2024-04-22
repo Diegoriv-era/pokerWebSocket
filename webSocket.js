@@ -18,7 +18,8 @@ const io = new Server(server, {
     
     cors: {
         //origin :"http://localhost:3000",
-        origin :"https://online-poker-game.onrender.com",
+        //origin :"https://online-poker-game.onrender.com",
+        origin :"https://pokerui-3d.onrender.com",
         methods: ["GET", "POST"],
         autoConnect: false,
         reconnect: true
