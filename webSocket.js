@@ -255,6 +255,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("dealFlop", (data) => {
+        console.log(data, "dealFlop");
         socket.to(data.roomName).emit("recievedDealFlop", data);
     });
 
@@ -282,8 +283,15 @@ io.on("connection", (socket) => {
         socket.to(data.roomName).emit("recievedPlayersBestHands", data);
     });
     socket.on("playerCheckAction", (data)=>{
+        console.log("checking", data);
         socket.to(data.roomName).emit("recievedCheckAction", data);
     })
+    socket.on("raiseAction", (data) =>{
+        console.log("im here bruh it worked", data);
+        socket.to(data.roomName).emit("recievedRaiseAction", data);
+        console.log("it emmited");
+    })
+
 
 })
 
