@@ -291,6 +291,12 @@ io.on("connection", (socket) => {
         socket.to(data.roomName).emit("recievedRaiseAction", data);
         console.log("it emmited");
     })
+    socket.on("foldAction", (data)=>{
+        socket.to(data.roomName).emit("recievedFoldAction", data.playerFolding);
+    })
+    socket.on("skipTurn", (data)=>{
+        socket.to(data.roomName).emit("recievedSkipTurn", data.skipTurn);
+    })
 
 
 })
