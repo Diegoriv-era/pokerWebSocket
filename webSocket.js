@@ -242,7 +242,7 @@ io.on("connection", (socket) => {
             } 
         });
         //socket.emit("update_room", roomSeatLayout);
-        socket.to(data.room).emit("recievedUpdateChipCount", roomSeatLayout);
+        socket.to(data.room).emit("recievedUpdateChipCount", {roomSeatLayout:roomSeatLayout, data:data});
     });
 
     socket.on("updateTotalPot", data => {
