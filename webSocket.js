@@ -60,6 +60,10 @@ io.on("connection", (socket) => {
         console.log("room emiiting message to:", data.roomName);
 
     });
+    socket.on("gameResult", (data) =>{
+        socket.to(data.roomName).emit("recieveGameResult",data);
+        console.log(data,"gameREsult");
+    })
 
     socket.on("selectSeat", (data) => {
         socket.to(data.roomName).emit("receiveSeatNumber", {...data, usersRooms: usersRooms});
