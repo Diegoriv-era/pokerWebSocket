@@ -301,6 +301,9 @@ io.on("connection", (socket) => {
     socket.on("skipTurn", (data)=>{
         socket.to(data.roomName).emit("recievedSkipTurn", data.skipTurn);
     })
+    socket.on("allInAction", (data)=>{
+        socket.to(data.roomName).emit("recievedAllInAction", data);
+    })
 
 
 })
